@@ -1,4 +1,4 @@
-src/*.o
-src/*.d
+**/*.o
+**/*.d
 chip8emulator
 .vscode/
