@@ -1,4 +1,5 @@
 **/*.o
 **/*.d
-chip8emulator
+chip8
+test/runtest
 .vscode/
