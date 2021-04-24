@@ -21,6 +21,7 @@ class TestMath : public CppUnit::TestFixture
     CPPUNIT_TEST(testSUBN_borrow);
     CPPUNIT_TEST(testSHL_MSB_on);
     CPPUNIT_TEST(testSHL_MSB_off);
+    CPPUNIT_TEST(testADD_inmediate);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -37,6 +38,7 @@ public:
     void testSUBN_borrow(void);
     void testSHL_MSB_on(void);
     void testSHL_MSB_off(void);
+    void testADD_inmediate(void);
 
 private:
     void testADD(unsigned char xRegisterValue, unsigned char yRegisterValue);
@@ -70,16 +72,16 @@ void TestMath::testOR(void)
     chip8.setRegister(yRegister, yRegisterValue);
 
     // Execute a cycle
-    CPPUNIT_ASSERT_EQUAL(chip8.executeCycle(), Ok);
+    CPPUNIT_ASSERT_EQUAL(Ok, chip8.executeCycle());
 
     // Check the program counter has advanced two bytes
-    CPPUNIT_ASSERT_EQUAL(chip8.getPc(), finalPc);
+    CPPUNIT_ASSERT_EQUAL(finalPc, chip8.getPc());
 
     // Check result
-    CPPUNIT_ASSERT_EQUAL(chip8.getRegister(xRegister), result);
+    CPPUNIT_ASSERT_EQUAL(result, chip8.getRegister(xRegister));
 
     // Check the y register has been left untouched
-    CPPUNIT_ASSERT_EQUAL(chip8.getRegister(yRegister), yRegisterValue);
+    CPPUNIT_ASSERT_EQUAL(yRegisterValue, chip8.getRegister(yRegister));
 }
 
 void TestMath::testAND(void)
@@ -104,16 +106,16 @@ void TestMath::testAND(void)
     chip8.setRegister(yRegister, yRegisterValue);
 
     // Execute a cycle
-    CPPUNIT_ASSERT_EQUAL(chip8.executeCycle(), Ok);
+    CPPUNIT_ASSERT_EQUAL(Ok, chip8.executeCycle());
 
     // Check the program counter has advanced two bytes
-    CPPUNIT_ASSERT_EQUAL(chip8.getPc(), finalPc);
+    CPPUNIT_ASSERT_EQUAL(finalPc, chip8.getPc());
 
     // Check the result
-    CPPUNIT_ASSERT_EQUAL(chip8.getRegister(xRegister), result);
+    CPPUNIT_ASSERT_EQUAL(result, chip8.getRegister(xRegister));
 
     // Check the y register has been left untouched
-    CPPUNIT_ASSERT_EQUAL(chip8.getRegister(yRegister), yRegisterValue);
+    CPPUNIT_ASSERT_EQUAL(yRegisterValue, chip8.getRegister(yRegister));
 }
 
 void TestMath::testXOR(void)
@@ -138,16 +140,16 @@ void TestMath::testXOR(void)
     chip8.setRegister(yRegister, yRegisterValue);
 
     // Execute a cycle
-    CPPUNIT_ASSERT_EQUAL(chip8.executeCycle(), Ok);
+    CPPUNIT_ASSERT_EQUAL(Ok, chip8.executeCycle());
 
     // Check the program counter has advanced two bytes
-    CPPUNIT_ASSERT_EQUAL(chip8.getPc(), finalPc);
+    CPPUNIT_ASSERT_EQUAL(finalPc, chip8.getPc());
 
     // Check the result
-    CPPUNIT_ASSERT_EQUAL(chip8.getRegister(xRegister), result);
+    CPPUNIT_ASSERT_EQUAL(result, chip8.getRegister(xRegister));
 
     // Check the y register has been left untouched
-    CPPUNIT_ASSERT_EQUAL(chip8.getRegister(yRegister), yRegisterValue);
+    CPPUNIT_ASSERT_EQUAL(yRegisterValue, chip8.getRegister(yRegister));
 }
 
 void TestMath::testADD(unsigned char xRegisterValue,
@@ -173,18 +175,18 @@ void TestMath::testADD(unsigned char xRegisterValue,
     chip8.setRegister(yRegister, yRegisterValue);
 
     // Execute a cycle
-    CPPUNIT_ASSERT_EQUAL(chip8.executeCycle(), Ok);
+    CPPUNIT_ASSERT_EQUAL(Ok, chip8.executeCycle());
 
     // Check the program counter has advanced two bytes
-    CPPUNIT_ASSERT_EQUAL(chip8.getPc(), finalPc);
+    CPPUNIT_ASSERT_EQUAL(finalPc, chip8.getPc());
 
     // Check the result has been stored in the x output register
     // and that the F register has the correct flag
-    CPPUNIT_ASSERT_EQUAL(chip8.getRegister(xRegister), storedResult);
-    CPPUNIT_ASSERT_EQUAL(chip8.getRegister(0xf), carry);
+    CPPUNIT_ASSERT_EQUAL(storedResult, chip8.getRegister(xRegister));
+    CPPUNIT_ASSERT_EQUAL(carry, chip8.getRegister(0xf));
 
     // Check the y register has been left untouched
-    CPPUNIT_ASSERT_EQUAL(chip8.getRegister(yRegister), yRegisterValue);
+    CPPUNIT_ASSERT_EQUAL(yRegisterValue, chip8.getRegister(yRegister));
 }
 
 void TestMath::testADD_noOverflow(void)
@@ -221,17 +223,17 @@ void TestMath::testSUB(unsigned char xRegisterValue,
     chip8.setRegister(yRegister, yRegisterValue);
 
     // Execute a cycle
-    CPPUNIT_ASSERT_EQUAL(chip8.executeCycle(), Ok);
+    CPPUNIT_ASSERT_EQUAL(Ok, chip8.executeCycle());
 
     // Check the program counter has advanced two bytes
-    CPPUNIT_ASSERT_EQUAL(chip8.getPc(), finalPc);
+    CPPUNIT_ASSERT_EQUAL(finalPc, chip8.getPc());
 
     // Check the result
-    CPPUNIT_ASSERT_EQUAL(chip8.getRegister(xRegister), result);
-    CPPUNIT_ASSERT_EQUAL(chip8.getRegister(0xf), FRegValue);
+    CPPUNIT_ASSERT_EQUAL(result, chip8.getRegister(xRegister));
+    CPPUNIT_ASSERT_EQUAL(FRegValue, chip8.getRegister(0xf));
 
     // Check the y register has been left untouched
-    CPPUNIT_ASSERT_EQUAL(chip8.getRegister(yRegister), yRegisterValue);
+    CPPUNIT_ASSERT_EQUAL(yRegisterValue, chip8.getRegister(yRegister));
 }
 
 void TestMath::testSUB_noBorrow()
@@ -265,14 +267,14 @@ void TestMath::testSHR(unsigned char xRegisterValue)
     chip8.setRegister(xRegister, xRegisterValue);
 
     // Execute a cycle
-    CPPUNIT_ASSERT_EQUAL(chip8.executeCycle(), Ok);
+    CPPUNIT_ASSERT_EQUAL(Ok, chip8.executeCycle());
 
     // Check the program counter has advanced two bytes
-    CPPUNIT_ASSERT_EQUAL(chip8.getPc(), finalPc);
+    CPPUNIT_ASSERT_EQUAL(finalPc, chip8.getPc());
 
     // Check the result
-    CPPUNIT_ASSERT_EQUAL(chip8.getRegister(xRegister), result);
-    CPPUNIT_ASSERT_EQUAL(chip8.getRegister(0xf), FRegValue);
+    CPPUNIT_ASSERT_EQUAL(result, chip8.getRegister(xRegister));
+    CPPUNIT_ASSERT_EQUAL(FRegValue, chip8.getRegister(0xf));
 }
 
 void TestMath::testSHR_LSB_on(void)
@@ -309,17 +311,17 @@ void TestMath::testSUBN(unsigned char xRegisterValue,
     chip8.setRegister(yRegister, yRegisterValue);
 
     // Execute a cycle
-    CPPUNIT_ASSERT_EQUAL(chip8.executeCycle(), Ok);
+    CPPUNIT_ASSERT_EQUAL(Ok, chip8.executeCycle());
 
     // Check the program counter has advanced two bytes
-    CPPUNIT_ASSERT_EQUAL(chip8.getPc(), finalPc);
+    CPPUNIT_ASSERT_EQUAL(finalPc, chip8.getPc());
 
     // Check the result
-    CPPUNIT_ASSERT_EQUAL(chip8.getRegister(xRegister), result);
-    CPPUNIT_ASSERT_EQUAL(chip8.getRegister(0xf), FRegValue);
+    CPPUNIT_ASSERT_EQUAL(result, chip8.getRegister(xRegister));
+    CPPUNIT_ASSERT_EQUAL(FRegValue, chip8.getRegister(0xf));
 
     // Check the y register has been left untouched
-    CPPUNIT_ASSERT_EQUAL(chip8.getRegister(yRegister), yRegisterValue);
+    CPPUNIT_ASSERT_EQUAL(yRegisterValue, chip8.getRegister(yRegister));
 }
 
 void TestMath::testSUBN_noBorrow(void)
@@ -353,14 +355,14 @@ void TestMath::testSHL(unsigned char xRegisterValue)
     chip8.setRegister(xRegister, xRegisterValue);
 
     // Execute a cycle
-    CPPUNIT_ASSERT_EQUAL(chip8.executeCycle(), Ok);
+    CPPUNIT_ASSERT_EQUAL(Ok, chip8.executeCycle());
 
     // Check the program counter has advanced two bytes
-    CPPUNIT_ASSERT_EQUAL(chip8.getPc(), finalPc);
+    CPPUNIT_ASSERT_EQUAL(finalPc, chip8.getPc());
 
     // Check the result and the flag
-    CPPUNIT_ASSERT_EQUAL(chip8.getRegister(xRegister), result);
-    CPPUNIT_ASSERT_EQUAL(chip8.getRegister(0xf), FRegValue);
+    CPPUNIT_ASSERT_EQUAL(result, chip8.getRegister(xRegister));
+    CPPUNIT_ASSERT_EQUAL(FRegValue, chip8.getRegister(0xf));
 }
 
 void TestMath::testSHL_MSB_on(void)
@@ -373,4 +375,33 @@ void TestMath::testSHL_MSB_off(void)
 {
     testSHL(0x00);
     testSHL(0xef);
+}
+
+void TestMath::testADD_inmediate()
+{
+    Chip8 chip8;
+    chip8.initialize();
+
+    // Decide some values
+    unsigned short instruction = 0x73ef;
+    unsigned short initialPc = 2;
+    unsigned short finalPc = 4;
+    unsigned char regIndex = 0x3;
+    unsigned char initialRegValue = 0x1;
+    unsigned char inmediate = 0xef;
+    unsigned char finalRegValue = initialRegValue + inmediate;
+
+    // Initialize relevant values
+    chip8.setInstructionInMemory(initialPc, instruction);
+    chip8.setPc(initialPc);
+    chip8.setRegister(regIndex, initialRegValue);
+
+    // Execute a cycle
+    CPPUNIT_ASSERT_EQUAL(Ok, chip8.executeCycle());
+
+    // Check the final result stored in the register
+    CPPUNIT_ASSERT_EQUAL(finalRegValue, chip8.getRegister(regIndex));
+
+    // Check the pc has advanced
+    CPPUNIT_ASSERT_EQUAL(finalPc, chip8.getPc());
 }

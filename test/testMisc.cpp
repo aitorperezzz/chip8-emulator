@@ -11,12 +11,16 @@ class TestMisc : public CppUnit::TestFixture
     CPPUNIT_TEST(testRET);
     CPPUNIT_TEST(testJP);
     CPPUNIT_TEST(testCALL);
+    CPPUNIT_TEST(testLD_inmediate);
+    CPPUNIT_TEST(testLD_register);
     CPPUNIT_TEST_SUITE_END();
 
 public:
     void testRET(void);
     void testJP(void);
     void testCALL(void);
+    void testLD_inmediate(void);
+    void testLD_register(void);
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(TestMisc);
@@ -108,4 +112,60 @@ void TestMisc::testCALL(void)
 
     // Check the pc has been now set to the address provided in the instruction
     CPPUNIT_ASSERT_EQUAL(chip8.getPc(), finalPc);
+}
+
+void TestMisc::testLD_inmediate(void)
+{
+    Chip8 chip8;
+    chip8.initialize();
+
+    // Decide some values for the test
+    unsigned short instruction = 0x62f5;
+    unsigned short initialPc = 0x2;
+    unsigned short finalPc = 0x4;
+    unsigned char regIndex = 0x2;
+    unsigned char value = 0xf5;
+
+    // Initialize internal variables
+    chip8.setInstructionInMemory(initialPc, instruction);
+    chip8.setPc(initialPc);
+
+    // Execute a cycle
+    CPPUNIT_ASSERT_EQUAL(Ok, chip8.executeCycle());
+
+    // Check the register holds the proper value
+    CPPUNIT_ASSERT_EQUAL(value, chip8.getRegister(regIndex));
+
+    // Check the pc has incremented
+    CPPUNIT_ASSERT_EQUAL(finalPc, chip8.getPc());
+}
+
+void TestMisc::testLD_register(void)
+{
+    Chip8 chip8;
+    chip8.initialize();
+
+    // Decide some values for the test
+    unsigned short instruction = 0x8230;
+    unsigned short initialPc = 0x2;
+    unsigned short finalPc = 0x4;
+    unsigned char xregIndex = 0x2;
+    unsigned char yregIndex = 0x3;
+    unsigned char regValue = 0x5b;
+
+    // Initialize internal variables
+    chip8.setInstructionInMemory(initialPc, instruction);
+    chip8.setPc(initialPc);
+    chip8.setRegister(yregIndex, regValue);
+
+    // Execute a cycle
+    CPPUNIT_ASSERT_EQUAL(Ok, chip8.executeCycle());
+
+    // Check the x register now holds the value that was insde y. Check
+    // the y register still holds the same value
+    CPPUNIT_ASSERT_EQUAL(regValue, chip8.getRegister(xregIndex));
+    CPPUNIT_ASSERT_EQUAL(regValue, chip8.getRegister(yregIndex));
+
+    // Check the pc has incremented
+    CPPUNIT_ASSERT_EQUAL(finalPc, chip8.getPc());
 }

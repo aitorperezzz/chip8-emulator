@@ -142,6 +142,28 @@ ErrorCode Chip8::executeInstruction(const unsigned short &instruction)
         const size_t step = v[registerIndex1] == v[registerIndex2] ? 4 : 2;
         pc += step;
     }
+    else if (instruction >> 12 == 0x6)
+    {
+        // 6xkk - LD Vx, byte
+        // Set Vx = kk
+        v[(instruction >> 8) & 0xf] = (instruction & 0xff);
+        pc += 2;
+    }
+    else if (instruction >> 12 == 0x7)
+    {
+        // 7xkk - ADD Vx, byte
+        // Set Vx = Vx + kk
+        const unsigned char index = (instruction >> 8) & 0xf;
+        v[index] = v[index] + (instruction & 0xff);
+        pc += 2;
+    }
+    else if ((instruction >> 12 == 0x8) && ((instruction & 0xf) == 0x0))
+    {
+        // 8xy0 - LD Vx, Vy
+        // Set Vx = Vy.
+        v[(instruction >> 8) & 0xf] = v[(instruction >> 4) & 0xf];
+        pc += 2;
+    }
     else if ((instruction >> 12 == 0x8) && ((instruction & 0xf) == 0x1))
     {
         // OR operation
