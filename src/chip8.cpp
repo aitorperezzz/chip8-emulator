@@ -1,6 +1,9 @@
+#include <climits>
 #include <filesystem>
 #include <fstream>
+#include <functional>
 #include <iostream>
+#include <random>
 
 #include "chip8.hpp"
 #include "utils.hpp"
@@ -216,6 +219,94 @@ ErrorCode Chip8::executeInstruction(const unsigned short &instruction)
         // SHL operation
         v[0xf] = (v[xRegister] >> 7) == 0x1 ? 0x1 : 0x0;
         v[xRegister] = v[xRegister] << 1;
+        pc += 2;
+    }
+    else if ((instruction >> 12) == 0xa)
+    {
+        // Annn - LD I, addr
+        // Set I = nnn
+        i = instruction & 0xfff;
+        pc += 2;
+    }
+    else if ((instruction >> 12) == 0xb)
+    {
+        // Bnnn - JP V0, addr
+        // Jump to location nnn + V0
+        pc = v[0x0] + (instruction & 0xfff);
+    }
+    else if ((instruction >> 12) == 0xc)
+    {
+        // Create a function that can generate randomly distributed
+        // unsigned chars
+        std::random_device r;
+        std::seed_seq seed{r(), r(), r(), r(), r(), r(), r(), r()};
+        auto rand = std::bind(std::uniform_int_distribution<>(0, UCHAR_MAX),
+                              std::mt19937(seed));
+
+        // Cxkk - RND Vx, byte
+        // Set Vx = random byte AND kk.
+        const unsigned char index = (instruction >> 8) & 0xf;
+        v[index] = static_cast<unsigned char>(rand()) & (instruction & 0xff);
+    }
+    else if ((instruction >> 12) == 0xf && (instruction & 0xff) == 0x07)
+    {
+        // Fx07 - LD Vx, DT
+        // Set Vx = delay timer value.
+        v[(instruction >> 8) & 0xf] = dtr;
+        pc += 2;
+    }
+    else if ((instruction >> 12) == 0xf && (instruction & 0xff) == 0x15)
+    {
+        // Fx15 - LD DT, Vx
+        // Set delay timer = Vx.
+        dtr = v[(instruction >> 8) & 0xf];
+        pc += 2;
+    }
+    else if ((instruction >> 12) == 0xf && (instruction & 0xff) == 0x18)
+    {
+        // Fx18 - LD ST, Vx
+        // Set sound timer = Vx.
+        str = v[(instruction >> 8) & 0xf];
+        pc += 2;
+    }
+    else if ((instruction >> 12) == 0xf && (instruction & 0xff) == 0x1e)
+    {
+        // Fx1E - ADD I, Vx
+        // Set I = I + Vx.
+        i = i + v[(instruction >> 8) & 0xf];
+        pc += 2;
+    }
+    else if ((instruction >> 12) == 0xf && (instruction & 0xff) == 0x33)
+    {
+        // Fx33 - LD B, Vx
+        // Store BCD representation of Vx in memory locations I, I+1, and I+2.
+        unsigned char value = v[(instruction >> 8) & 0xf];
+        memory[i] = value / 100;
+        memory[i + 1] = (value / 10) % 10;
+        memory[i + 2] = value % 10;
+        pc += 2;
+    }
+    else if ((instruction >> 12) == 0xf && (instruction & 0xff) == 0x55)
+    {
+        // Fx55 - LD [I], Vx
+        // Store registers V0 through Vx in memory starting at location I.
+        const unsigned char indexMax = (instruction >> 8) & 0xf;
+        for (unsigned char index = 0; index <= indexMax; index++)
+        {
+            memory[i + index] = v[index];
+        }
+        pc += 2;
+    }
+    else if ((instruction >> 12) == 0xf && (instruction & 0xff) == 0x65)
+    {
+        // Fx65 - LD Vx, [I]
+        // Read registers V0 through Vx from memory starting at location I.
+        const unsigned char indexMax = (instruction >> 8) & 0xf;
+        for (unsigned char index = 0; index <= indexMax; index++)
+        {
+            Utils::printHexNumber("income mem value: ", memory[i + index]);
+            v[index] = memory[i + index];
+        }
         pc += 2;
     }
     else

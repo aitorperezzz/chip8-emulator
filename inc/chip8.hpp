@@ -51,17 +51,29 @@ public:
     ErrorCode setInstructionInMemory(unsigned short memoryIndex,
                                      unsigned short instruction);
 
-    // Sets a value to the register selected
-    inline void setRegister(unsigned char registerIndex,
-                            unsigned char registerValue)
+    // Sets a byte in memory. Beware that an instruction is two bytes long,
+    // so this function should not be used to set a complete instruction
+    inline void setMemory(const unsigned short index, const unsigned char value)
     {
-        v[registerIndex] = registerValue;
+        memory[index] = value;
+    }
+
+    // Get a byte from memory
+    inline unsigned char getMemory(const unsigned short index) const
+    {
+        return memory[index];
+    }
+
+    // Sets a value to the register selected
+    inline void setRegister(unsigned char regIndex, unsigned char regValue)
+    {
+        v[regIndex] = regValue;
     }
 
     // Returns the value stored at a register
-    inline unsigned char getRegister(unsigned char registerIndex) const
+    inline unsigned char getRegister(unsigned char regIndex) const
     {
-        return v[registerIndex];
+        return v[regIndex];
     }
 
     // Sets the program counter
@@ -83,19 +95,57 @@ public:
     }
 
     // Gets the value of the stack pointer
-    inline unsigned char getStackPointer()
+    inline unsigned char getStackPointer() const
     {
         return sp;
     }
 
+    // Sets the complete stack
     inline void setStack(const std::array<unsigned short, SIZE_STACK> &inStack)
     {
         stack = inStack;
     }
 
-    inline const std::array<unsigned short, SIZE_STACK> &getStack()
+    // Returns a reference to the complete stack
+    inline const std::array<unsigned short, SIZE_STACK> &getStack() const
     {
         return stack;
+    }
+
+    // Sets the I register
+    inline void setI(const unsigned short inI)
+    {
+        i = inI;
+    }
+
+    // Returns the current value of the I register
+    inline unsigned short getI() const
+    {
+        return i;
+    }
+
+    // Sets the delay timer register
+    inline void setDelayTimer(const unsigned char inDtr)
+    {
+        dtr = inDtr;
+    }
+
+    // Returns the value of the delay timer register
+    inline unsigned char getDelayTimer() const
+    {
+        return dtr;
+    }
+
+    // Sets the sound timer register
+    inline void setSoundTimer(const unsigned char inStr)
+    {
+        str = inStr;
+    }
+
+    // Returns the value of the sound timer register
+    inline unsigned char getSoundTimer() const
+    {
+        return str;
     }
 
 private:

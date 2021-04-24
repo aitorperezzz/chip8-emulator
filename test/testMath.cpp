@@ -22,6 +22,8 @@ class TestMath : public CppUnit::TestFixture
     CPPUNIT_TEST(testSHL_MSB_on);
     CPPUNIT_TEST(testSHL_MSB_off);
     CPPUNIT_TEST(testADD_inmediate);
+    CPPUNIT_TEST(testADD_iRegister);
+    CPPUNIT_TEST(testBCD);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -39,6 +41,8 @@ public:
     void testSHL_MSB_on(void);
     void testSHL_MSB_off(void);
     void testADD_inmediate(void);
+    void testADD_iRegister(void);
+    void testBCD(void);
 
 private:
     void testADD(unsigned char xRegisterValue, unsigned char yRegisterValue);
@@ -401,6 +405,72 @@ void TestMath::testADD_inmediate()
 
     // Check the final result stored in the register
     CPPUNIT_ASSERT_EQUAL(finalRegValue, chip8.getRegister(regIndex));
+
+    // Check the pc has advanced
+    CPPUNIT_ASSERT_EQUAL(finalPc, chip8.getPc());
+}
+
+void TestMath::testADD_iRegister()
+{
+    Chip8 chip8;
+    chip8.initialize();
+
+    // Decide some values
+    unsigned short instruction = 0xf51e;
+    unsigned short initialPc = 2;
+    unsigned short finalPc = 4;
+    unsigned char regIndex = 0x5;
+    unsigned char regValue = 0x2;
+    unsigned short iValue = 0x5;
+    unsigned short result = regValue + iValue;
+
+    // Initialize relevant values
+    chip8.setInstructionInMemory(initialPc, instruction);
+    chip8.setPc(initialPc);
+    chip8.setRegister(regIndex, regValue);
+    chip8.setI(iValue);
+
+    // Execute a cycle
+    CPPUNIT_ASSERT_EQUAL(Ok, chip8.executeCycle());
+
+    // Check I register holds the result of the sum
+    CPPUNIT_ASSERT_EQUAL(result, chip8.getI());
+
+    // Check the pc has advanced
+    CPPUNIT_ASSERT_EQUAL(finalPc, chip8.getPc());
+}
+
+void TestMath::testBCD()
+{
+    Chip8 chip8;
+    chip8.initialize();
+
+    // Decide some values
+    unsigned short instruction = 0xf533;
+    unsigned short initialPc = 2;
+    unsigned short finalPc = 4;
+    unsigned char regIndex = 0x5;
+    unsigned char regValue = 0x9A; // This is the number 154 in decimal
+    unsigned short iValue = 0x589;
+    std::array<unsigned char, 3> result = {0x1, 0x5, 0x4};
+
+    // Initialize relevant values
+    chip8.setInstructionInMemory(initialPc, instruction);
+    chip8.setPc(initialPc);
+    chip8.setRegister(regIndex, regValue);
+    chip8.setI(iValue);
+
+    // Execute a cycle
+    CPPUNIT_ASSERT_EQUAL(Ok, chip8.executeCycle());
+
+    // Check the value stored at i has not changed
+    CPPUNIT_ASSERT_EQUAL(iValue, chip8.getI());
+
+    // Check i, i+1 and i+2 values in memory
+    for (size_t i = 0; i < 3; i++)
+    {
+        CPPUNIT_ASSERT_EQUAL(result[i], chip8.getMemory(iValue + i));
+    }
 
     // Check the pc has advanced
     CPPUNIT_ASSERT_EQUAL(finalPc, chip8.getPc());
