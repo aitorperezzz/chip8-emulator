@@ -150,7 +150,8 @@ void TestMath::testXOR(void)
     CPPUNIT_ASSERT_EQUAL(chip8.getRegister(yRegister), yRegisterValue);
 }
 
-void TestMath::testADD(unsigned char xRegisterValue, unsigned char yRegisterValue)
+void TestMath::testADD(unsigned char xRegisterValue,
+                       unsigned char yRegisterValue)
 {
     Chip8 chip8;
     chip8.initialize();
@@ -198,7 +199,8 @@ void TestMath::testADD_overflow(void)
     testADD(0x01, 0xff);
 }
 
-void TestMath::testSUB(unsigned char xRegisterValue, unsigned char yRegisterValue)
+void TestMath::testSUB(unsigned char xRegisterValue,
+                       unsigned char yRegisterValue)
 {
     Chip8 chip8;
     chip8.initialize();
@@ -285,7 +287,8 @@ void TestMath::testSHR_LSB_off(void)
     testSHR(0xf2);
 }
 
-void TestMath::testSUBN(unsigned char xRegisterValue, unsigned char yRegisterValue)
+void TestMath::testSUBN(unsigned char xRegisterValue,
+                        unsigned char yRegisterValue)
 {
     Chip8 chip8;
     chip8.initialize();

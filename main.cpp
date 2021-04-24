@@ -8,12 +8,14 @@ int main(void)
     Chip8 chip8;
     if (chip8.initialize() != Ok)
     {
-        std::cout << "Error: could not initialize the Chip 8 interpreter" << std::endl;
+        std::cout << "Error: could not initialize the Chip 8 interpreter"
+                  << std::endl;
         return -1;
     }
     else
     {
-        std::cout << "Chip 8 interpreter instance has been initialized" << std::endl;
+        std::cout << "Chip 8 interpreter instance has been initialized"
+                  << std::endl;
     }
 
     // TODO: initialize the graphics
@@ -22,12 +24,15 @@ int main(void)
     std::string filename = "./games/15PUZZLE";
     if (chip8.loadProgram(filename) != Ok)
     {
-        std::cout << "Error: program " + filename + " could not be loaded to memory" << std::endl;
+        std::cout << "Error: program " + filename +
+                         " could not be loaded to memory"
+                  << std::endl;
         return -1;
     }
     else
     {
-        std::cout << "Program " + filename + " has been loaded to memory" << std::endl;
+        std::cout << "Program " + filename + " has been loaded to memory"
+                  << std::endl;
     }
 
     // Loop forever
