@@ -304,7 +304,6 @@ ErrorCode Chip8::executeInstruction(const unsigned short &instruction)
         const unsigned char indexMax = (instruction >> 8) & 0xf;
         for (unsigned char index = 0; index <= indexMax; index++)
         {
-            Utils::printHexNumber("income mem value: ", memory[i + index]);
             v[index] = memory[i + index];
         }
         pc += 2;
